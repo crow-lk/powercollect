@@ -7,12 +7,18 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Customer extends Model
 {
+    protected $table = 'customers';  
     protected $fillable = [
         'name',
         'account_no',
         'address',
         'nic'
     ];
+
+    public function customerUsages()
+    {
+        return $this->hasMany(CustomerUsage::class);
+    }
     
 }
 

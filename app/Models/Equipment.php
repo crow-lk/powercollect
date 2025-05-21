@@ -15,4 +15,9 @@ class Equipment extends Model
         'model',
         'kVA'
     ];
+
+    public function customerUsages()
+    {
+        return $this->hasMany(CustomerUsage::class);
+    }
 }
