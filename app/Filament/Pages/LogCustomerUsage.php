@@ -39,6 +39,9 @@ class LogCustomerUsage extends Page implements HasForms
                         ->searchable()
                         ->reactive()
                         ->required(),
+                    // DatePicker::make('date')
+                    //     ->label('Date')
+                    //     ->required(),
                 ]),
 
             Section::make('Equipment Usage')
@@ -51,46 +54,80 @@ class LogCustomerUsage extends Page implements HasForms
                                 ->options(Equipment::pluck('type', 'id'))
                                 ->searchable()
                                 ->reactive()
-                                ->required(),
+                                ->required()
+                                ->columnSpan(2),
                             TextInput::make('kVA')
-                                ->label('kVA'),
-                            TimePicker::make('start_time')
-                                ->required(),
-                            TimePicker::make('end_time')
-                                ->required(),
+                                ->label('kVA')
+                                ->columnSpan(2),
+                            TextInput::make('start_time')
+                                ->label('Start Time')
+                                ->placeholder('HH:MM')
+                                ->mask('99:99')
+                                ->required()
+                                ->rules(['regex:/^([0-9]|0[0-9]|1[0-2]):[0-5][0-9]$/'])
+                                ->helperText('Format: HH:MM (12-hour format)')
+                                ->columnSpan(1),
+                            Select::make('start_period')
+                                ->label('AM/PM')
+                                ->options([
+                                    'AM' => 'AM',
+                                    'PM' => 'PM',
+                                ])
+                                ->required()
+                                ->columnSpan(1),
+                            TextInput::make('end_time')
+                                ->label('End Time')
+                                ->placeholder('HH:MM')
+                                ->mask('99:99')
+                                ->required()
+                                ->rules(['regex:/^([0-9]|0[0-9]|1[0-2]):[0-5][0-9]$/'])
+                                ->helperText('Format: HH:MM (12-hour format)')
+                                ->columnSpan(1),
+                            Select::make('end_period')
+                                ->label('AM/PM')
+                                ->options([
+                                    'AM' => 'AM',
+                                    'PM' => 'PM',
+                                ])
+                                ->required()
+                                ->columnSpan(1),
                         ])
-                        ->columns(4),
+                        ->columns(6)
+                        ->addActionLabel('Add Equipment Usage'),
                 ])
         ];
-
-        
     }
 
+    public function submit(): void
+    {
+        // Validate the form data
+        $this->validate();
 
+        
 
-    public function submit(): void{
-            // Validate the form data
-            $this->validate();
+        // Loop through the logs and save each entry
+        foreach ($this->logs as $log) {
 
-            // Loop through the logs and save each entry
-            foreach ($this->logs as $log) {
-                \App\Models\CustomerUsage::create([
-                    'customer_id' => $this->customer_id, // From the form
-                    'equipment_id' => $log['equipment_id'], // From the repeater
-                    'kVA' => $log['kVA'], // From the repeater
-                    'start_time' => $log['start_time'], // From the repeater
-                    'end_time' => $log['end_time'], // From the repeater
-                    'date' => $this->date, // From the form
-                ]);
-            }
+            $startTime = \Carbon\Carbon::createFromFormat('h:i A', $log['start_time'] . ' ' . $log['start_period'])->format('H:i:s');
+            $endTime = \Carbon\Carbon::createFromFormat('h:i A', $log['end_time'] . ' ' . $log['end_period'])->format('H:i:s');
 
-            // Notify the user of success
-            Notification::make()
-                ->title('Customer usage logged successfully!')
-                ->success()
-                ->send();
+            \App\Models\CustomerUsage::create([
+                'customer_id' => $this->customer_id,
+                'equipment_id' => $log['equipment_id'],
+                'kVA' => $log['kVA'],
+                'start_time' => $startTime,
+                'end_time' => $endTime,
+                'date' => $this->date,
+            ]);
+        }
 
-            // Optionally reset the form
-            $this->reset(['customer_id', 'date', 'logs']);
-            }
+        // Notify the user of success
+        Notification::make()
+            ->title('Customer usage logged successfully!')
+            ->success()
+            ->send();
+
+        // Optionally reset the form
+        $this->reset(['customer_id', 'date', 'logs']);
+    }
 }
