@@ -29,8 +29,8 @@ class CustomerUsageTable extends Page implements HasTable
     protected function getTableColumns(): array
     {
         return [
-            TextColumn::make('customer.name')
-                ->label('Customer')
+            TextColumn::make('customer.account_no')
+                ->label('Account No')
                 ->sortable()
                 ->searchable(),
             TextColumn::make('equipment.type')
