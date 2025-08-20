@@ -15,8 +15,8 @@ class Equipment extends Model
         'model'
     ];
 
-    // public function customerUsages()
+    // public function consumerUsages()
     // {
-    //     return $this->hasMany(CustomerUsage::class);
+    //     return $this->hasMany(ConsumerUsage::class);
     // }
 }

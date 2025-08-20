@@ -34,16 +34,21 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->brandLogo(asset('assets/leco.webp'))
             ->brandLogoHeight('6rem')
-            ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
+            ->resources([
+                \App\Filament\Resources\ConsumersResource::class,
+                \App\Filament\Resources\ConsumerUsageResource::class,
+                \App\Filament\Resources\EquipmentsResource::class,
+                \App\Filament\Resources\PropertyResource::class,
+                \App\Filament\Resources\PropertyPartResource::class,
+                \App\Filament\Resources\UserResource::class,
+            ])
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
                 Pages\Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
-                \App\Filament\Widgets\TotalCustomersWidget::class,
+                \App\Filament\Widgets\TotalConsumersWidget::class,
                 \App\Filament\Widgets\TotalEquipmentWidget::class,
             ])
             ->middleware([
