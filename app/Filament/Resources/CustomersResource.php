@@ -19,7 +19,11 @@ class CustomersResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
 
-    protected static ?string $navigationGroup = 'Customers';
+    protected static ?string $navigationGroup = 'Consumer Management';
+
+    protected static ?string $slug = 'consumers';
+
+    protected static ?string $navigationLabel = 'Consumers';
 
     public static function form(Form $form): Form
     {
@@ -46,7 +50,9 @@ class CustomersResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ManageCustomers::route('/'),
+            'index' => Pages\ListCustomers::route('/'),
+            'create' => Pages\CreateCustomer::route('/create'),
+            'edit' => Pages\EditCustomer::route('/{record}/edit'),
         ];
     }
 }

@@ -12,12 +12,11 @@ class Equipment extends Model
     protected $fillable = [
         'type',
         'brand',
-        'model',
-        'kVA'
+        'model'
     ];
 
-    public function customerUsages()
-    {
-        return $this->hasMany(CustomerUsage::class);
-    }
+    // public function customerUsages()
+    // {
+    //     return $this->hasMany(CustomerUsage::class);
+    // }
 }

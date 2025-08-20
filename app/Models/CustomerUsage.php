@@ -14,6 +14,14 @@ class CustomerUsage extends Model
         'kVA',
         'start_time',
         'end_time',
+        'date',
+    ];
+
+    protected $casts = [
+        'start_time' => 'datetime:H:i',
+        'end_time' => 'datetime:H:i',
+        'date' => 'date',
+        'kVA' => 'decimal:2',
     ];
 
     public function customer()

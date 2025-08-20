@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('equipments', function (Blueprint $table) {
-            // Drop the 'kVA' column from the 'equipments' table
-            $table->dropColumn('kVA');
+        Schema::table('users', function (Blueprint $table) {
+            $table->string('role')->default('user')->after('email');
         });
     }
 
@@ -22,9 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('equipments', function (Blueprint $table) {
-            // Add the 'kVA' column back to the 'equipments' table
-            $table->integer('kVA')->after('model');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('role');
         });
     }
 };

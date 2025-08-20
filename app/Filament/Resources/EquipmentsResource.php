@@ -17,23 +17,29 @@ class EquipmentsResource extends Resource
 {
     protected static ?string $model = Equipment::class;
 
-    protected static ?string $navigationGroup = 'Equipments';
+    protected static ?string $navigationGroup = 'Appliance Managment';
 
     protected static ?string $navigationIcon = 'heroicon-o-radio';
 
     public static function form(Form $form): Form
     {
-        return $form->schema([Forms\Components\TextInput::make('type')->required(), 
-        Forms\Components\TextInput::make('brand')->required(), 
-        Forms\Components\TextInput::make('model')]);
+        return $form->schema([
+            Forms\Components\TextInput::make('type')->required(),
+            Forms\Components\TextInput::make('brand')->required(),
+            Forms\Components\TextInput::make('model'),
+            Forms\Components\TextInput::make('kVA')->numeric()->required(),
+        ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
-            ->columns([Tables\Columns\TextColumn::make('type')->sortable()->searchable(), 
-            Tables\Columns\TextColumn::make('brand')->sortable()->searchable(), 
-            Tables\Columns\TextColumn::make('model')->sortable()->searchable(), ])
+            ->columns([
+                Tables\Columns\TextColumn::make('type')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('brand')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('model')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('kVA')->label('kVA')->sortable(),
+            ])
             ->filters([
                 //
             ])
@@ -44,7 +50,9 @@ class EquipmentsResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ManageEquipments::route('/'),
+            'index' => Pages\ListEquipments::route('/'),
+            'create' => Pages\CreateEquipment::route('/create'),
+            'edit' => Pages\EditEquipment::route('/{record}/edit'),
         ];
     }
 }
