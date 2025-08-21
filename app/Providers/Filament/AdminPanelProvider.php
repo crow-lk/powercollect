@@ -32,8 +32,8 @@ class AdminPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Amber,
             ])
-            ->brandLogo(asset('assets/leco.webp'))
-            ->brandLogoHeight('6rem')
+            ->brandLogo(asset('assets/leco.png'))
+            ->brandLogoHeight('4rem')
             ->resources([
                 \App\Filament\Resources\ConsumersResource::class,
                 \App\Filament\Resources\ConsumerUsageResource::class,
