@@ -21,6 +21,7 @@ class LogConsumerUsage extends Page
     protected static ?string $navigationLabel = 'Log Usage';
     protected static ?string $navigationGroup = 'Usage';
     protected static ?string $navigationIcon = 'heroicon-o-pencil-square';
+    protected static bool $shouldRegisterNavigation = false;
     protected static string $view = 'filament.pages.log-consumer-usage';
 
     public ?array $data = [];

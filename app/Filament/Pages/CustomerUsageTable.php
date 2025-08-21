@@ -19,6 +19,7 @@ class CustomerUsageTable extends Page implements HasTable
     protected static ?string $navigationLabel = 'Usage Table';
     protected static ?string $navigationGroup = 'Usage';
     protected static ?string $navigationIcon = 'heroicon-o-table-cells';
+    protected static bool $shouldRegisterNavigation = false;
     protected static string $view = 'filament.pages.consumer-usage-table';
 
     public function table(Table $table): Table
