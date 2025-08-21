@@ -41,10 +41,5 @@ return new class extends Migration
         Schema::table('houses', function (Blueprint $table) {
             $table->renameColumn('consumer_id', 'customer_id');
         });
-
-        // Add old foreign key constraint back
-        Schema::table('houses', function (Blueprint $table) {
-            $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
-        });
     }
 };

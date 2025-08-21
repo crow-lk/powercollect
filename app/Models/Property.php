@@ -9,8 +9,6 @@ class Property extends Model
 {
     use HasFactory;
 
-    protected $table = 'properties';
-
     protected $fillable = [
         'consumer_id',
         'account_no',
@@ -22,7 +20,7 @@ class Property extends Model
         return $this->belongsTo(Consumer::class);
     }
 
-    public function parts()
+    public function propertyParts()
     {
         return $this->hasMany(PropertyPart::class);
     }

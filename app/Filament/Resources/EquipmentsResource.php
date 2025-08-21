@@ -21,6 +21,31 @@ class EquipmentsResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-radio';
 
+    public static function canViewAny(): bool
+    {
+        return auth()->user()->can('view equipment');
+    }
+
+    public static function canCreate(): bool
+    {
+        return auth()->user()->can('create equipment');
+    }
+
+    public static function canEdit($record): bool
+    {
+        return auth()->user()->can('edit equipment');
+    }
+
+    public static function canDelete($record): bool
+    {
+        return auth()->user()->can('delete equipment');
+    }
+
+    public static function canDeleteAny(): bool
+    {
+        return auth()->user()->can('delete equipment');
+    }
+
     public static function form(Form $form): Form
     {
         return $form->schema([
@@ -43,7 +68,7 @@ class EquipmentsResource extends Resource
             ->filters([
                 //
             ])
-            ->actions([Tables\Actions\ViewAction::make(), Tables\Actions\EditAction::make()])
+            ->actions([Tables\Actions\ViewAction::make(), Tables\Actions\EditAction::make(), Tables\Actions\DeleteAction::make()])
             ->bulkActions([Tables\Actions\BulkActionGroup::make([Tables\Actions\DeleteBulkAction::make()])]);
     }
 

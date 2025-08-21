@@ -27,22 +27,22 @@ class UserResource extends Resource
 
     public static function canViewAny(): bool
     {
-        return in_array(Auth::user()?->role, ['admin', 'manager']) ?? false;
+        return Auth::user()?->hasRole('admin') ?? false;
     }
 
     public static function canCreate(): bool
     {
-        return in_array(Auth::user()?->role, ['admin', 'manager']) ?? false;
+        return Auth::user()?->hasRole('admin') ?? false;
     }
 
     public static function canEdit($record): bool
     {
-        return in_array(Auth::user()?->role, ['admin', 'manager']) ?? false;
+        return Auth::user()?->hasRole('admin') ?? false;
     }
 
     public static function canDelete($record): bool
     {
-        return Auth::user()?->role === 'admin' ?? false;
+        return Auth::user()?->hasRole('admin') ?? false;
     }
 
     public static function form(Form $form): Form
@@ -67,13 +67,11 @@ class UserResource extends Resource
                             ->minLength(8)
                             ->maxLength(255)
                             ->helperText('Leave blank to keep current password when editing'),
-                        Forms\Components\Select::make('role')
-                            ->options([
-                                'admin' => 'Administrator',
-                                'manager' => 'Manager', 
-                                'user' => 'User',
-                            ])
-                            ->default('user')
+                        Forms\Components\Select::make('roles')
+                            ->relationship('roles', 'name')
+                            ->multiple()
+                            ->preload()
+                            ->searchable()
                             ->required(),
                     ])
             ]);
@@ -89,14 +87,10 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('email')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('role')
-                    ->badge()
-                    ->color(fn (string $state): string => match ($state) {
-                        'admin' => 'danger',
-                        'manager' => 'warning',
-                        'user' => 'success',
-                        default => 'gray',
-                    }),
+                Tables\Columns\TextColumn::make('roles.name')
+                    ->searchable()
+                    ->sortable()
+                    ->badge(),
                 Tables\Columns\TextColumn::make('email_verified_at')
                     ->dateTime()
                     ->sortable()

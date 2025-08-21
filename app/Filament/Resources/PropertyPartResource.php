@@ -26,9 +26,6 @@ class PropertyPartResource extends Resource
     public static function form(Form $form): Form
     {
         return $form->schema([
-            Select::make('property_id')
-                ->relationship('property', 'account_no')
-                ->required(),
             TextInput::make('name')
                 ->required()
                 ->maxLength(255)
@@ -40,7 +37,6 @@ class PropertyPartResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('id')->sortable(),
-                TextColumn::make('property.account_no')->label('Property')->sortable(),
                 TextColumn::make('name')->sortable()
             ])
             ->filters([

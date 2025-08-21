@@ -9,34 +9,18 @@ class ConsumerUsage extends Model
     protected $table = 'consumer_usages';
 
     protected $fillable = [
-        'consumer_id',
-        'equipment_id',
-        'property_part_id',
-        'kVA',
-        'start_time',
-        'end_time',
+        'property_id',
         'date',
+        'usage_data',
     ];
 
     protected $casts = [
-        'start_time' => 'datetime:H:i',
-        'end_time' => 'datetime:H:i',
         'date' => 'date',
-        'kVA' => 'decimal:2',
+        'usage_data' => 'array',
     ];
 
-    public function consumer()
+    public function property()
     {
-        return $this->belongsTo(Consumer::class);
-    }
-
-    public function equipment()
-    {
-        return $this->belongsTo(Equipment::class);
-    }
-
-    public function propertyPart()
-    {
-        return $this->belongsTo(PropertyPart::class, 'property_part_id');
+        return $this->belongsTo(Property::class);
     }
 }

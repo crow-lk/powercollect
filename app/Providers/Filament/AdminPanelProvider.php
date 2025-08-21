@@ -41,6 +41,8 @@ class AdminPanelProvider extends PanelProvider
                 \App\Filament\Resources\PropertyResource::class,
                 \App\Filament\Resources\PropertyPartResource::class,
                 \App\Filament\Resources\UserResource::class,
+                \App\Filament\Resources\RoleResource::class,
+                \App\Filament\Resources\PermissionResource::class,
             ])
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([

@@ -25,10 +25,34 @@ class ConsumersResource extends Resource
 
     protected static ?string $navigationLabel = 'Consumers';
 
+    public static function canViewAny(): bool
+    {
+        return auth()->user()->can('view consumers');
+    }
+
+    public static function canCreate(): bool
+    {
+        return auth()->user()->can('create consumers');
+    }
+
+    public static function canEdit($record): bool
+    {
+        return auth()->user()->can('edit consumers');
+    }
+
+    public static function canDelete($record): bool
+    {
+        return auth()->user()->can('delete consumers');
+    }
+
+    public static function canDeleteAny(): bool
+    {
+        return auth()->user()->can('delete consumers');
+    }
+
     public static function form(Form $form): Form
     {
         return $form->schema([Forms\Components\TextInput::make('name')->required(), 
-        Forms\Components\TextInput::make('account_no')->required(), 
         Forms\Components\TextInput::make('address')->required(), 
         Forms\Components\TextInput::make('nic')->required()]);
     }
@@ -37,7 +61,6 @@ class ConsumersResource extends Resource
     {
         return $table
             ->columns([Tables\Columns\TextColumn::make('name')->sortable()->searchable(), 
-            Tables\Columns\TextColumn::make('account_no')->sortable()->searchable(), 
             Tables\Columns\TextColumn::make('address')->sortable()->searchable(), 
             Tables\Columns\TextColumn::make('nic')->sortable()->searchable()])
             ->filters([

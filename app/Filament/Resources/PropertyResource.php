@@ -20,12 +20,38 @@ class PropertyResource extends Resource
     protected static ?string $navigationGroup = 'Property Management';
     protected static ?string $navigationLabel = 'Property';
 
+    public static function canViewAny(): bool
+    {
+        return auth()->user()->can('view properties');
+    }
+
+    public static function canCreate(): bool
+    {
+        return auth()->user()->can('create properties');
+    }
+
+    public static function canEdit($record): bool
+    {
+        return auth()->user()->can('edit properties');
+    }
+
+    public static function canDelete($record): bool
+    {
+        return auth()->user()->can('delete properties');
+    }
+
+    public static function canDeleteAny(): bool
+    {
+        return auth()->user()->can('delete properties');
+    }
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Select::make('consumer_id')
                     ->relationship('consumer', 'name')
+                    ->getOptionLabelUsing(fn ($value): ?string => \App\Models\Consumer::find($value)?->name ?? '')
                     ->required(),
                 TextInput::make('account_no')
                     ->required()
