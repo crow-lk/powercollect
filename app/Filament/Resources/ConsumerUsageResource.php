@@ -9,6 +9,7 @@ use App\Models\Equipment;
 use App\Models\Property;
 use App\Models\PropertyPart;
 use Filament\Forms;
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
@@ -111,31 +112,43 @@ class ConsumerUsageResource extends Resource
                                                         ]))
                                                     ->required()
                                                     ->searchable()
-                                                    ->placeholder('Select equipment'),
+                                                    ->placeholder('Select equipment')
+                                                    ->columnSpan(1),
 
-                                                                        TextInput::make('watt')
-                            ->label('W (watt)')
-                            ->numeric()
-                            ->required()
-                            ->suffix('W')
-                            ->step(0.01),
-
-                                                Select::make('time_period')
-                                                    ->label('Time Period (15-min interval)')
-                                                    ->options(collect(range(1, 96))->mapWithKeys(function ($period) {
-                                                        $startTime = now()->startOfDay()->addMinutes(($period - 1) * 15);
-                                                        $endTime = $startTime->copy()->addMinutes(15);
-                                                        $label = $startTime->format('H:i').' - '.$endTime->format('H:i');
-
-                                                        return [$period => "Period {$period} ({$label})"];
-                                                    }))
-                                                    ->multiple()
+                                                TextInput::make('watt')
+                                                    ->label('W (watt)')
+                                                    ->numeric()
                                                     ->required()
-                                                    ->searchable()
-                                                    ->placeholder('Select multiple time periods')
-                                                    ->helperText('You can select multiple time periods for this equipment'),
+                                                    ->suffix('W')
+                                                    ->step(0.01)
+                                                    ->columnSpan(1),
+
+                                                Forms\Components\Section::make('Time Period Selection')
+                                                    ->schema([
+                                                        Forms\Components\CheckboxList::make('time_period')
+                                                            ->label('Time Period (15-min interval)')
+                                                            ->options(collect(range(1, 96))->mapWithKeys(function ($period) {
+                                                                $startTime = now()->startOfDay()->addMinutes(($period - 1) * 15);
+                                                                $endTime = $startTime->copy()->addMinutes(15);
+                                                                $label = $startTime->format('H:i').' - '.$endTime->format('H:i');
+
+                                                                return [$period => $label];
+                                                            }))
+                                                            ->required()
+                                                            ->searchable()
+                                                            ->columns(6)
+                                                            ->gridDirection('row')
+                                                            ->bulkToggleable()
+                                                            ->descriptions(collect(range(1, 96))->mapWithKeys(function ($period) {
+                                                                return [$period => "Period {$period}"];
+                                                            }))
+                                                            ->helperText('Select multiple time periods for this equipment'),
+                                                    ])
+                                                    ->collapsible()
+                                                    ->collapsed(true)
+                                                    ->columnSpanFull(),
                                             ])
-                                            ->columns(3)
+                                            ->columns(2)
                                             ->defaultItems(1)
                                             ->addActionLabel('Add Equipment')
                                             ->reorderableWithButtons()
