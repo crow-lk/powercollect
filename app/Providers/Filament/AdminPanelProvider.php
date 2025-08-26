@@ -50,7 +50,6 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 \App\Filament\Widgets\OverviewStatsWidget::class,
                 \App\Filament\Widgets\UsageStatisticsWidget::class,
-                \App\Filament\Widgets\KvaUsageChartWidget::class,
                 \App\Filament\Widgets\EquipmentUsageDistributionWidget::class,
                 \App\Filament\Widgets\RecentActivityWidget::class,
             ])

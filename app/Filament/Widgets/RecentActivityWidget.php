@@ -37,11 +37,6 @@ class RecentActivityWidget extends BaseWidget
                     ->date()
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('total_kva')
-                    ->label('Total KVA')
-                    ->numeric(2)
-                    ->sortable(),
-
                 Tables\Columns\TextColumn::make('total_equipment_count')
                     ->label('Equipment Count')
                     ->numeric()

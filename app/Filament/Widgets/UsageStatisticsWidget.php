@@ -26,12 +26,6 @@ class UsageStatisticsWidget extends BaseWidget
             ? round((($thisMonthUsages - $lastMonthUsages) / $lastMonthUsages) * 100, 1)
             : 0;
 
-        $totalKva = ConsumerUsage::get()->sum(function ($usage) {
-            return $usage->total_kva;
-        });
-
-        $averageKvaPerUsage = $totalUsages > 0 ? round($totalKva / $totalUsages, 2) : 0;
-
         return [
             Stat::make('Total Usage Records', $totalUsages)
                 ->description('All recorded usages')
@@ -42,11 +36,6 @@ class UsageStatisticsWidget extends BaseWidget
                 ->description($monthlyIncrease >= 0 ? "+{$monthlyIncrease}% from last month" : "{$monthlyIncrease}% from last month")
                 ->descriptionIcon($monthlyIncrease >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
                 ->color($monthlyIncrease >= 0 ? 'success' : 'danger'),
-
-            Stat::make('Total KVA', number_format($totalKva, 2))
-                ->description("Avg: {$averageKvaPerUsage} KVA per usage")
-                ->descriptionIcon('heroicon-m-bolt')
-                ->color('warning'),
         ];
     }
 }
