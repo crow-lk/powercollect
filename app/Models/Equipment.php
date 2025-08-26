@@ -15,7 +15,7 @@ class Equipment extends Model
         'type',
         'brand',
         'model',
-        'kVA'
+        'watt'
     ];
 
     // public function consumerUsages()

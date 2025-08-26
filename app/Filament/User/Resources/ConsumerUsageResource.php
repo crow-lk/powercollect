@@ -46,8 +46,8 @@ class ConsumerUsageResource extends Resource
                             ->searchable()
                             ->required()
                             ->preload(),
-                        Forms\Components\TextInput::make('kVA')
-                            ->label('kVA')
+                        Forms\Components\TextInput::make('watt')
+                            ->label('W (watt)')
                             ->required()
                             ->numeric()
                             ->step(0.01)
@@ -86,8 +86,8 @@ class ConsumerUsageResource extends Resource
                     ->label('Equipment')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('kVA')
-                    ->label('kVA')
+                Tables\Columns\TextColumn::make('watt')
+                    ->label('W (watt)')
                     ->numeric(
                         decimalPlaces: 2,
                         decimalSeparator: '.',

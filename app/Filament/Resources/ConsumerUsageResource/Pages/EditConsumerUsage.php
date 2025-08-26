@@ -29,7 +29,7 @@ class EditConsumerUsage extends EditRecord
                         $flatUsageData[] = [
                             'property_part' => $propertyPartData['property_part'],
                             'equipment' => $equipmentData['equipment'],
-                            'kva' => $equipmentData['kva'],
+                            'watt' => $equipmentData['watt'],
                             'time_period' => $equipmentData['time_period'],
                         ];
                     }

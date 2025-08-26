@@ -85,10 +85,11 @@ class LogConsumerUsage extends Page
                             ->createOptionUsing(function (array $data) {
                                 return Equipment::create($data)->getKey();
                             }),
-                        TextInput::make('kVA')
-                            ->label('kVA (Usage Value)')
+                        TextInput::make('watt')
+                            ->label('Watt (Usage Value)')
                             ->numeric()
-                            ->required(),
+                            ->required()
+                            ->suffix('W'),
                         Select::make('period_number')
                             ->label('Time Period (15-min interval)')
                             ->options(array_combine(range(1, 96), range(1, 96)))

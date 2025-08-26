@@ -113,12 +113,12 @@ class ConsumerUsageResource extends Resource
                                                     ->searchable()
                                                     ->placeholder('Select equipment'),
 
-                                                TextInput::make('kva')
-                                                    ->label('kVA (Usage Value)')
-                                                    ->numeric()
-                                                    ->required()
-                                                    ->suffix('kVA')
-                                                    ->step(0.01),
+                                                                        TextInput::make('watt')
+                            ->label('W (watt)')
+                            ->numeric()
+                            ->required()
+                            ->suffix('W')
+                            ->step(0.01),
 
                                                 Select::make('time_period')
                                                     ->label('Time Period (15-min interval)')
@@ -176,9 +176,9 @@ class ConsumerUsageResource extends Resource
                     ->label('Equipment Count')
                     ->formatStateUsing(fn ($record): string => $record->total_equipment_count.' equipment(s)')
                     ->badge(),
-                Tables\Columns\TextColumn::make('total_kva')
-                    ->label('Total kVA')
-                    ->formatStateUsing(fn ($record): string => number_format($record->total_kva, 2).' kVA')
+                Tables\Columns\TextColumn::make('total_watt')
+                    ->label('Total watt')
+                    ->formatStateUsing(fn ($record): string => number_format($record->total_watt, 2).' W')
                     ->sortable(false),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -256,9 +256,9 @@ class ConsumerUsageResource extends Resource
                                     ->color('info'),
                                 Infolists\Components\TextEntry::make('equipment')
                                     ->label('Equipment'),
-                                Infolists\Components\TextEntry::make('kva')
-                                    ->label('kVA Usage')
-                                    ->formatStateUsing(fn ($state) => number_format($state, 2).' kVA')
+                                Infolists\Components\TextEntry::make('watt')
+                                    ->label('W (watt)')
+                                    ->formatStateUsing(fn ($state) => number_format($state, 2).' W')
                                     ->badge()
                                     ->color('success'),
                                 Infolists\Components\TextEntry::make('time_period')
@@ -295,9 +295,9 @@ class ConsumerUsageResource extends Resource
                             ->formatStateUsing(fn ($record) => $record->total_time_slots_count.' time slots')
                             ->badge()
                             ->color('info'),
-                        Infolists\Components\TextEntry::make('total_kva')
-                            ->label('Total kVA Usage')
-                            ->formatStateUsing(fn ($record) => number_format($record->total_kva, 2).' kVA')
+                        Infolists\Components\TextEntry::make('total_watt')
+                            ->label('Total watt Usage')
+                            ->formatStateUsing(fn ($record) => number_format($record->total_watt, 2).' W')
                             ->badge()
                             ->color('primary'),
                     ])

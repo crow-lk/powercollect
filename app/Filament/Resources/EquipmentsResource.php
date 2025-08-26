@@ -52,7 +52,7 @@ class EquipmentsResource extends Resource
             Forms\Components\TextInput::make('type')->required(),
             Forms\Components\TextInput::make('brand')->required(),
             Forms\Components\TextInput::make('model'),
-            Forms\Components\TextInput::make('kVA')->numeric()->required(),
+            Forms\Components\TextInput::make('watt')->numeric()->required()->suffix('W'),
         ]);
     }
 
@@ -63,7 +63,7 @@ class EquipmentsResource extends Resource
                 Tables\Columns\TextColumn::make('type')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('brand')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('model')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('kVA')->label('kVA')->sortable(),
+                Tables\Columns\TextColumn::make('watt')->label('Watt')->sortable(),
             ])
             ->filters([
                 //

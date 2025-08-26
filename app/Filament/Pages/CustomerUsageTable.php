@@ -35,8 +35,8 @@ class CustomerUsageTable extends Page implements HasTable
                     ->label('Equipment')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('kVA')
-                    ->label('kVA')
+                TextColumn::make('watt')
+                    ->label('W')
                     ->numeric(
                         decimalPlaces: 2,
                         decimalSeparator: '.',

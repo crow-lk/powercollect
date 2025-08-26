@@ -15,7 +15,7 @@ class EquipmentFactory extends Factory
             'type' => $this->faker->word(),
             'brand' => $this->faker->company(),
             'model' => $this->faker->bothify('??-####'),
-            'kVA' => $this->faker->randomFloat(2, 1, 100),
+            'watt' => $this->faker->randomFloat(0, 1000, 100000),
         ];
     }
 }
