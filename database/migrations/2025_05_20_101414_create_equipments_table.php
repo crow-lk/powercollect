@@ -14,12 +14,12 @@ return new class extends Migration
         Schema::create('equipments', function (Blueprint $table) {
             $table->id();
             $table->string('type');
-$table->string('brand');
-$table->string('model')->nullable();
-$table->decimal('kVA');
-$table->timestamps();
-$table->softDeletes();
-    });
+            $table->string('brand');
+            $table->string('model')->nullable();
+            $table->decimal('kVA');
+            $table->timestamps();
+            $table->softDeletes();
+        });
     }
 
     /**
