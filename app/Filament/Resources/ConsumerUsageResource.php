@@ -297,24 +297,7 @@ class ConsumerUsageResource extends Resource
                             ->label('Equipment Usage Records'),
                     ]),
 
-                Infolists\Components\Section::make('Summary')
-                    ->schema([
-                        Infolists\Components\TextEntry::make('total_equipment')
-                            ->label('Total Equipment Count')
-                            ->formatStateUsing(fn ($record) => $record->total_equipment_count.' equipment(s)')
-                            ->badge(),
-                        Infolists\Components\TextEntry::make('total_time_slots')
-                            ->label('Total Time Slots')
-                            ->formatStateUsing(fn ($record) => $record->total_time_slots_count.' time slots')
-                            ->badge()
-                            ->color('info'),
-                        Infolists\Components\TextEntry::make('total_watt')
-                            ->label('Total watt Usage')
-                            ->formatStateUsing(fn ($record) => number_format($record->total_watt, 2).' W')
-                            ->badge()
-                            ->color('primary'),
-                    ])
-                    ->columns(3),
+                
             ]);
     }
 
