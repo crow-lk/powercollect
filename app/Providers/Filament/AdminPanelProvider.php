@@ -53,7 +53,6 @@ class AdminPanelProvider extends PanelProvider
                 \App\Filament\Widgets\EquipmentUsageDistributionWidget::class,
                 \App\Filament\Widgets\RecentActivityWidget::class,
                 \App\Filament\Widgets\EquipmentUsageFrequency::class,
-                \App\Filament\Widgets\EquipmentUsage::class,
             ])
             ->middleware([
                 EncryptCookies::class,
