@@ -75,4 +75,9 @@ class EditConsumerUsage extends EditRecord
 
         return $data;
     }
+
+    protected function getRedirectUrl(): string
+    {
+        return static::getResource()::getUrl('index');
+    } 
 }

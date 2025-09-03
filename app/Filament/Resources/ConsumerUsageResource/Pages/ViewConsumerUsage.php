@@ -13,8 +13,10 @@ class ViewConsumerUsage extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\EditAction::make(),
-            Actions\DeleteAction::make(),
+            Actions\Action::make('back')
+                ->label('Back to List')
+                ->url($this->getResource()::getUrl('index'))
+                ->icon('heroicon-o-arrow-left'),
         ];
     }
 }
