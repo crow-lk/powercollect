@@ -17,6 +17,10 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Solutionforest\FilamentScaffold\FilamentScaffoldPlugin;
+use App\Filament\Resources\ConsumersResource;
+use App\Filament\Resources\ConsumerUsageResource;
+
+
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -33,8 +37,8 @@ class AdminPanelProvider extends PanelProvider
             ->brandLogo(asset('assets/leco.png'))
             ->brandLogoHeight('4rem')
             ->resources([
-                \App\Filament\Resources\ConsumersResource::class,
-                \App\Filament\Resources\ConsumerUsageResource::class,
+                ConsumersResource::class,
+                ConsumerUsageResource::class,
                 \App\Filament\Resources\EquipmentsResource::class,
                 \App\Filament\Resources\PropertyResource::class,
                 \App\Filament\Resources\PropertyPartResource::class,
@@ -48,12 +52,17 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                \App\Filament\Widgets\OverviewStatsWidget::class,
-                \App\Filament\Widgets\UsageStatisticsWidget::class,
+                \App\Filament\Widgets\TotalPropertiesWidget::class,
+                \App\Filament\Widgets\PropertyPartsWidget::class,
+                \App\Filament\Widgets\TotalEquipmentWidget::class,
+                \App\Filament\Widgets\TotalConsumersWidget::class,
+                \App\Filament\Widgets\TotalUsageRecordsWidget::class,
+                \App\Filament\Widgets\ThisMonthUsageWidget::class,
                 \App\Filament\Widgets\EquipmentUsageDistributionWidget::class,
                 \App\Filament\Widgets\RecentActivityWidget::class,
                 \App\Filament\Widgets\EquipmentUsageFrequency::class,
                 \App\Filament\Widgets\PowerConsumption::class,
+                
             ])
             ->middleware([
                 EncryptCookies::class,
