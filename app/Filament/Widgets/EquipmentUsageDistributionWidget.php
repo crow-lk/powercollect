@@ -13,6 +13,9 @@ class EquipmentUsageDistributionWidget extends ChartWidget
 
     protected int|string|array $columnSpan = 'full';
 
+    //maxheight
+    protected static ?string $maxHeight = '200px';
+
     protected static ?string $pollingInterval = null;
 
     protected function getData(): array

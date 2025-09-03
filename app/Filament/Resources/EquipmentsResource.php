@@ -75,7 +75,7 @@ class EquipmentsResource extends Resource
             ])
             ->filters([
                 //
-            ])
+            ])->paginated([10, 25, 50])
             ->actions([Tables\Actions\ViewAction::make(), Tables\Actions\EditAction::make(), Tables\Actions\DeleteAction::make()])
             ->bulkActions([Tables\Actions\BulkActionGroup::make([Tables\Actions\DeleteBulkAction::make()])]);
     }

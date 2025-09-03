@@ -65,7 +65,7 @@ class ConsumersResource extends Resource
             Tables\Columns\TextColumn::make('nic')->sortable()->searchable()])
             ->filters([
                 //
-            ])
+            ])->paginated([10, 25, 50])
             ->actions([Tables\Actions\ViewAction::make(), Tables\Actions\EditAction::make()])
             ->bulkActions([Tables\Actions\BulkActionGroup::make([Tables\Actions\DeleteBulkAction::make()])]);
     }

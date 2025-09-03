@@ -15,7 +15,7 @@ class EquipmentUsageFrequency extends ChartWidget
     protected int | string | array $columnSpan = 'full';
 
     //maxheight
-    protected static ?string $maxHeight = '400px';
+    protected static ?string $maxHeight = '200px';
 
     protected function getData(): array
     {
