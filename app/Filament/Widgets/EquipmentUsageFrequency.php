@@ -11,6 +11,11 @@ use Flowframe\Trend\TrendValue;
 class EquipmentUsageFrequency extends ChartWidget
 {
     protected static ?string $heading = 'Equipment Usage Frequency';
+    
+    protected int | string | array $columnSpan = 'full';
+
+    //maxheight
+    protected static ?string $maxHeight = '400px';
 
     protected function getData(): array
     {

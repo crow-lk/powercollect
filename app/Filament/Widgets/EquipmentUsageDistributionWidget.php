@@ -9,7 +9,7 @@ use Illuminate\Contracts\View\View;
 
 class EquipmentUsageDistributionWidget extends ChartWidget
 {
-    protected static ?string $heading = 'Power Usage by Time Slots (15-minute intervals)';
+    protected static ?string $heading = 'Total wattage ratings by Time Slots (15-minute intervals)';
 
     protected int|string|array $columnSpan = 'full';
 
@@ -107,11 +107,11 @@ class EquipmentUsageDistributionWidget extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => 'Power Consumption (Watts)',
+                    'label' => 'Total Wattage (Watts)',
                     'data' => $wattValues,
-                    'backgroundColor' => 'rgba(59, 130, 246, 0.6)',
-                    'borderColor' => 'rgba(59, 130, 246, 1)',
-                    'borderWidth' => 1,
+                    'backgroundColor' => 'rgba(226, 229, 7, 0.6)',
+                    'borderColor' => 'rgb(172, 11, 67)',
+                    'borderWidth' => 0.5,
                     'fill' => true,
                 ],
             ],
@@ -127,7 +127,7 @@ class EquipmentUsageDistributionWidget extends ChartWidget
     protected function getOptions(): array
     {
         return [
-            'maintainAspectRatio' => false,
+            'maintainAspectRatio' => true,
             'responsive' => true,
             'scales' => [
                 'x' => [
@@ -137,7 +137,7 @@ class EquipmentUsageDistributionWidget extends ChartWidget
                         'text' => 'Time (15-minute Intervals)',
                     ],
                     'ticks' => [
-                        'maxRotation' => 45,
+                        'maxRotation' => 90,
                         'minRotation' => 0,
                         'maxTicksLimit' => 24,
                     ],
