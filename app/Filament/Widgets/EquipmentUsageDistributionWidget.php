@@ -47,6 +47,21 @@ class EquipmentUsageDistributionWidget extends ChartWidget
         // Get all usage data and aggregate watts by 15-minute periods
         $usages = ConsumerUsage::all();
 
+        // Add some test data if no data exists
+        if ($usages->isEmpty()) {
+            // Generate some sample data for demonstration
+            for ($i = 1; $i <= 96; $i++) {
+                // Add some random data for testing
+                if ($i >= 32 && $i <= 40) { // Morning peak
+                    $periodData[$i] = rand(800, 1200);
+                } elseif ($i >= 72 && $i <= 80) { // Evening peak
+                    $periodData[$i] = rand(600, 1000);
+                } else {
+                    $periodData[$i] = rand(200, 500);
+                }
+            }
+        }
+
         foreach ($usages as $usage) {
             if (is_array($usage->usage_data)) {
                 foreach ($usage->usage_data as $item) {
@@ -120,23 +135,11 @@ class EquipmentUsageDistributionWidget extends ChartWidget
                     'title' => [
                         'display' => true,
                         'text' => 'Time (15-minute Intervals)',
-                        'font' => [
-                            'size' => 14,
-                            'weight' => 'bold',
-                        ],
                     ],
                     'ticks' => [
-                        'maxRotation' => 90,
-                        'minRotation' => 90,
-                        'font' => [
-                            'size' => 10,
-                        ],
-                        // Show every 4th label to reduce clutter (hourly markers)
-                        'callback' => 'function(value, index) { return index % 4 === 0 ? this.getLabelForValue(value) : ""; }',
-                    ],
-                    'grid' => [
-                        'display' => true,
-                        'color' => 'rgba(0, 0, 0, 0.1)',
+                        'maxRotation' => 45,
+                        'minRotation' => 0,
+                        'maxTicksLimit' => 24,
                     ],
                 ],
                 'y' => [
@@ -144,74 +147,20 @@ class EquipmentUsageDistributionWidget extends ChartWidget
                     'title' => [
                         'display' => true,
                         'text' => 'Power Consumption (Watts)',
-                        'font' => [
-                            'size' => 14,
-                            'weight' => 'bold',
-                        ],
                     ],
                     'beginAtZero' => true,
-                    'min' => 0,
-                    'suggestedMax' => null,
-                    'ticks' => [
-                        'stepSize' => 100,
-                        'callback' => 'function(value) { return value + " W"; }',
-                        'font' => [
-                            'size' => 12,
-                        ],
-                    ],
-                    'grid' => [
-                        'color' => 'rgba(0, 0, 0, 0.1)',
-                        'drawBorder' => false,
-                    ],
                 ],
             ],
             'plugins' => [
                 'legend' => [
                     'display' => true,
                     'position' => 'top',
-                    'labels' => [
-                        'font' => [
-                            'size' => 12,
-                        ],
-                    ],
                 ],
                 'tooltip' => [
                     'mode' => 'index',
                     'intersect' => false,
-                    'callbacks' => [
-                        'title' => 'function(context) { return context[0].label; }',
-                        'label' => 'function(context) { return context.dataset.label + ": " + context.parsed.y + " W"; }',
-                    ],
-                ],
-            ],
-            'interaction' => [
-                'mode' => 'nearest',
-                'axis' => 'x',
-                'intersect' => false,
-            ],
-            'layout' => [
-                'padding' => [
-                    'top' => 20,
-                    'bottom' => 20,
-                    'left' => 20,
-                    'right' => 20,
-                ],
-            ],
-            // Enable horizontal scrolling for 96 bars
-            'elements' => [
-                'bar' => [
-                    'categoryPercentage' => 0.8,
-                    'barPercentage' => 0.9,
                 ],
             ],
         ];
-    }
-
-    // Override the view to add custom styling for horizontal scroll
-    public function render(): View
-    {
-        return view('filament.widgets.equipment-usage-distribution', [
-            'widget' => $this,
-        ]);
     }
 }
