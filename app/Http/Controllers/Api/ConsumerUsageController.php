@@ -14,7 +14,7 @@ class ConsumerUsageController extends Controller
     public function index(Request $request)
     {
         $query = ConsumerUsage::with(['consumer:id,name,account_no', 'equipment:id,type,brand,model'])
-            ->select('id', 'consumer_id', 'equipment_id', 'kVA', 'start_time', 'end_time', 'date', 'created_at');
+            ->select('id', 'consumer_id', 'equipment_id', 'watt', 'start_time', 'end_time', 'date', 'created_at');
 
         // Filter by date range if provided
         if ($request->has('date_from')) {
@@ -50,7 +50,7 @@ class ConsumerUsageController extends Controller
         $validated = $request->validate([
             'consumer_id' => 'required|exists:consumers,id',
             'equipment_id' => 'required|exists:equipments,id',
-            'kVA' => 'required|numeric|min:0.001',
+            'watt' => 'required|numeric|min:0.001',
             'start_time' => 'required|date_format:H:i',
             'end_time' => 'required|date_format:H:i|after:start_time',
             'date' => 'required|date|before_or_equal:today',
@@ -79,7 +79,7 @@ class ConsumerUsageController extends Controller
         $validated = $request->validate([
             'consumer_id' => 'required|exists:consumers,id',
             'equipment_id' => 'required|exists:equipments,id',
-            'kVA' => 'required|numeric|min:0.001',
+            'watt' => 'required|numeric|min:0.001',
             'start_time' => 'required|date_format:H:i',
             'end_time' => 'required|date_format:H:i|after:start_time',
             'date' => 'required|date|before_or_equal:today',
@@ -109,13 +109,13 @@ class ConsumerUsageController extends Controller
         $totalRecords = ConsumerUsage::count();
         $totalConsumers = ConsumerUsage::distinct('consumer_id')->count();
         $totalEquipment = ConsumerUsage::distinct('equipment_id')->count();
-        $totalKva = ConsumerUsage::sum('kVA');
+        $totalWatt = ConsumerUsage::sum('watt');
 
         return response()->json([
             'total_records' => $totalRecords,
             'total_consumers' => $totalConsumers,
             'total_equipment' => $totalEquipment,
-            'total_kva' => round($totalKva, 2),
+            'total_watt' => round($totalWatt, 2),
         ]);
     }
 }

@@ -44,7 +44,7 @@ class ConsumerUsage extends Model
 
                         return [
                             'equipment' => $equipment['equipment'] ?? 'N/A',
-                            'kva' => $equipment['kva'] ?? 0,
+                            'watt' => $equipment['watt'] ?? 0,
                             'time_periods' => $timePeriods,
                             'property_part' => $item['property_part'] ?? 'N/A',
                         ];
@@ -57,7 +57,7 @@ class ConsumerUsage extends Model
 
                     return collect([[
                         'equipment' => $item['equipment'] ?? 'N/A',
-                        'kva' => $item['kva'] ?? 0,
+                        'watt' => $item['watt'] ?? 0,
                         'time_periods' => $timePeriods,
                         'property_part' => $item['property_part'] ?? 'N/A',
                     ]]);
@@ -68,37 +68,7 @@ class ConsumerUsage extends Model
         return collect();
     }
 
-    // // Helper method to calculate total kVA
-    // public function getTotalKvaAttribute()
-    // {
-    //     if (is_array($this->usage_data)) {
-    //         return collect($this->usage_data)->sum(function ($item) {
-    //             if (isset($item['equipment_data'])) {
-    //                 // New nested structure
-    //                 return collect($item['equipment_data'])->sum(function ($equipment) {
-    //                     $timePeriods = is_array($equipment['time_period'] ?? null)
-    //                         ? $equipment['time_period']
-    //                         : [$equipment['time_period'] ?? null];
 
-    //                     // Multiply kVA by number of time periods for this equipment
-    //                     return (float) ($equipment['kva'] ?? 0) * count(array_filter($timePeriods));
-    //                 });
-    //             } else {
-    //                 // Direct structure
-    //                 $timePeriods = is_array($item['time_period'] ?? null)
-    //                     ? $item['time_period']
-    //                     : [$item['time_period'] ?? null];
-
-    //                 // Multiply kVA by number of time periods
-    //                 return (float) ($item['kva'] ?? 0) * count(array_filter($timePeriods));
-    //             }
-    //         });
-    //     }
-
-    //     return 0;
-    // }
-
-    // Helper method to get total equipment count
     public function getTotalEquipmentCountAttribute()
     {
         if (is_array($this->usage_data)) {

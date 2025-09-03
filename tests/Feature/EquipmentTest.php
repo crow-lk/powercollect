@@ -37,7 +37,7 @@ class EquipmentTest extends TestCase
             ->set('data.type', $newData->type)
             ->set('data.brand', $newData->brand)
             ->set('data.model', $newData->model)
-            ->set('data.kVA', $newData->kVA)
+            ->set('data.watt', $newData->watt)
             ->call('create')
             ->assertHasNoFormErrors();
 
@@ -45,7 +45,7 @@ class EquipmentTest extends TestCase
             'type' => $newData->type,
             'brand' => $newData->brand,
             'model' => $newData->model,
-            'kVA' => $newData->kVA,
+            'watt' => $newData->watt,
         ]);
     }
 
@@ -64,7 +64,7 @@ class EquipmentTest extends TestCase
                 'type' => $equipment->type,
                 'brand' => $equipment->brand,
                 'model' => $equipment->model,
-                'kVA' => (string) $equipment->kVA, // Cast to string for comparison
+                'watt' => (string) $equipment->watt, // Cast to string for comparison
             ]);
     }
 
@@ -77,7 +77,7 @@ class EquipmentTest extends TestCase
             ->set('data.type', $newData->type)
             ->set('data.brand', $newData->brand)
             ->set('data.model', $newData->model)
-            ->set('data.kVA', $newData->kVA)
+            ->set('data.watt', $newData->watt)
             ->call('save')
             ->assertHasNoFormErrors();
 

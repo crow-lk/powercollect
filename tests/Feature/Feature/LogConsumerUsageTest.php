@@ -30,13 +30,13 @@ class LogConsumerUsageTest extends TestCase
             [
                 'property_part_id' => $propertyPart->id,
                 'equipment_id' => $equipment1->id,
-                'kVA' => 10.5,
+                'watt' => 10.5,
                 'period_number' => 1,
             ],
             [
                 'property_part_id' => $propertyPart->id,
                 'equipment_id' => $equipment2->id,
-                'kVA' => 20.0,
+                'watt' => 20.0,
                 'period_number' => 2,
             ],
         ];

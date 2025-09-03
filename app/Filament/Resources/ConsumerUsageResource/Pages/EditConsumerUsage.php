@@ -57,7 +57,7 @@ class EditConsumerUsage extends EditRecord
                 }
                 $groupedData[$propertyPart][] = [
                     'equipment' => $item['equipment'],
-                    'kva' => $item['kva'],
+                    'watt' => $item['watt'],
                     'time_period' => $item['time_period'],
                 ];
             }

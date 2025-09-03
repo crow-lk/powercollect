@@ -5,32 +5,46 @@ namespace App\Filament\Widgets;
 use App\Models\ConsumerUsage;
 use App\Models\Equipment;
 use Filament\Widgets\ChartWidget;
+use Illuminate\Contracts\View\View;
 
 class EquipmentUsageDistributionWidget extends ChartWidget
 {
-    protected static ?string $heading = 'Power Usage by Time Slots';
-
-    protected static ?int $sort = 5;
+    protected static ?string $heading = 'Power Usage by Time Slots (15-minute intervals)';
 
     protected int|string|array $columnSpan = 'full';
 
-    protected static ?string $maxHeight = '400px';
+    protected static ?string $pollingInterval = null;
 
     protected function getData(): array
     {
-        // Initialize hourly data (24 hours)
-        $hourlyData = [];
-        $hourlyLabels = [];
+        // Initialize 15-minute interval data (96 periods)
+        $periodData = [];
+        $periodLabels = [];
         
-        // Create labels for 24 hours
-        for ($hour = 0; $hour < 24; $hour++) {
-            $nextHour = ($hour + 1) % 24;
-            $label = sprintf('%02d:00 - %02d:00', $hour, $nextHour);
-            $hourlyLabels[] = $label;
-            $hourlyData[$hour] = 0; // Initialize with 0 watts
+        // Create labels for 96 fifteen-minute periods
+        for ($period = 1; $period <= 96; $period++) {
+            // Calculate hours and minutes for start and end of period
+            $startMinutes = ($period - 1) * 15;
+            $endMinutes = $period * 15;
+            
+            $startHour = intval($startMinutes / 60);
+            $startMin = $startMinutes % 60;
+            
+            $endHour = intval($endMinutes / 60);
+            $endMin = $endMinutes % 60;
+            
+            // Handle midnight wrap-around for the last period
+            if ($period == 96) {
+                $label = sprintf('%02d:%02d - 00:00', $startHour, $startMin);
+            } else {
+                $label = sprintf('%02d:%02d - %02d:%02d', $startHour, $startMin, $endHour, $endMin);
+            }
+            
+            $periodLabels[] = $label;
+            $periodData[$period] = 0; // Initialize with 0 watts
         }
 
-        // Get all usage data and aggregate watts by hours
+        // Get all usage data and aggregate watts by 15-minute periods
         $usages = ConsumerUsage::all();
 
         foreach ($usages as $usage) {
@@ -49,9 +63,7 @@ class EquipmentUsageDistributionWidget extends ChartWidget
                             
                             foreach ($timePeriods as $period) {
                                 if ($period >= 1 && $period <= 96) {
-                                    // Convert 15-minute period to hour (1-4 = hour 0, 5-8 = hour 1, etc.)
-                                    $hour = intval(($period - 1) / 4);
-                                    $hourlyData[$hour] += $watt;
+                                    $periodData[$period] += $watt;
                                 }
                             }
                         }
@@ -66,9 +78,7 @@ class EquipmentUsageDistributionWidget extends ChartWidget
                         
                         foreach ($timePeriods as $period) {
                             if ($period >= 1 && $period <= 96) {
-                                // Convert 15-minute period to hour
-                                $hour = intval(($period - 1) / 4);
-                                $hourlyData[$hour] += $watt;
+                                $periodData[$period] += $watt;
                             }
                         }
                     }
@@ -77,7 +87,7 @@ class EquipmentUsageDistributionWidget extends ChartWidget
         }
 
         // Convert to ordered arrays
-        $wattValues = array_values($hourlyData);
+        $wattValues = array_values($periodData);
 
         return [
             'datasets' => [
@@ -86,35 +96,47 @@ class EquipmentUsageDistributionWidget extends ChartWidget
                     'data' => $wattValues,
                     'backgroundColor' => 'rgba(59, 130, 246, 0.6)',
                     'borderColor' => 'rgba(59, 130, 246, 1)',
-                    'borderWidth' => 2,
+                    'borderWidth' => 1,
                     'fill' => true,
-                    'tension' => 0.4,
                 ],
             ],
-            'labels' => $hourlyLabels,
+            'labels' => $periodLabels,
         ];
     }
 
     protected function getType(): string
     {
-        return 'line';
+        return 'bar';
     }
 
     protected function getOptions(): array
     {
         return [
-            'responsive' => true,
             'maintainAspectRatio' => false,
+            'responsive' => true,
             'scales' => [
                 'x' => [
                     'display' => true,
                     'title' => [
                         'display' => true,
-                        'text' => 'Time (Hourly Intervals)',
+                        'text' => 'Time (15-minute Intervals)',
+                        'font' => [
+                            'size' => 14,
+                            'weight' => 'bold',
+                        ],
                     ],
                     'ticks' => [
-                        'maxRotation' => 45,
-                        'minRotation' => 45,
+                        'maxRotation' => 90,
+                        'minRotation' => 90,
+                        'font' => [
+                            'size' => 10,
+                        ],
+                        // Show every 4th label to reduce clutter (hourly markers)
+                        'callback' => 'function(value, index) { return index % 4 === 0 ? this.getLabelForValue(value) : ""; }',
+                    ],
+                    'grid' => [
+                        'display' => true,
+                        'color' => 'rgba(0, 0, 0, 0.1)',
                     ],
                 ],
                 'y' => [
@@ -122,6 +144,10 @@ class EquipmentUsageDistributionWidget extends ChartWidget
                     'title' => [
                         'display' => true,
                         'text' => 'Power Consumption (Watts)',
+                        'font' => [
+                            'size' => 14,
+                            'weight' => 'bold',
+                        ],
                     ],
                     'beginAtZero' => true,
                     'min' => 0,
@@ -129,6 +155,9 @@ class EquipmentUsageDistributionWidget extends ChartWidget
                     'ticks' => [
                         'stepSize' => 100,
                         'callback' => 'function(value) { return value + " W"; }',
+                        'font' => [
+                            'size' => 12,
+                        ],
                     ],
                     'grid' => [
                         'color' => 'rgba(0, 0, 0, 0.1)',
@@ -140,10 +169,19 @@ class EquipmentUsageDistributionWidget extends ChartWidget
                 'legend' => [
                     'display' => true,
                     'position' => 'top',
+                    'labels' => [
+                        'font' => [
+                            'size' => 12,
+                        ],
+                    ],
                 ],
                 'tooltip' => [
                     'mode' => 'index',
                     'intersect' => false,
+                    'callbacks' => [
+                        'title' => 'function(context) { return context[0].label; }',
+                        'label' => 'function(context) { return context.dataset.label + ": " + context.parsed.y + " W"; }',
+                    ],
                 ],
             ],
             'interaction' => [
@@ -159,6 +197,21 @@ class EquipmentUsageDistributionWidget extends ChartWidget
                     'right' => 20,
                 ],
             ],
+            // Enable horizontal scrolling for 96 bars
+            'elements' => [
+                'bar' => [
+                    'categoryPercentage' => 0.8,
+                    'barPercentage' => 0.9,
+                ],
+            ],
         ];
+    }
+
+    // Override the view to add custom styling for horizontal scroll
+    public function render(): View
+    {
+        return view('filament.widgets.equipment-usage-distribution', [
+            'widget' => $this,
+        ]);
     }
 }
