@@ -2,15 +2,15 @@
 
 namespace App\Filament\Widgets;
 
-use App\Models\PropertyPart;
+use App\Models\User;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
-class PropertyPartsWidget extends BaseWidget
+class TotalActiveUsersWidget extends BaseWidget
 {
     protected int|string|array $columnSpan = 1;
     
-    protected static ?int $sort = 9;
+    protected static ?int $sort = 10;
 
     protected function getColumns(): int
     {
@@ -20,9 +20,9 @@ class PropertyPartsWidget extends BaseWidget
     protected function getStats(): array
     {
         return [
-            Stat::make('Property Parts', PropertyPart::count())
-                ->description('Available property parts')
-                ->descriptionIcon('heroicon-m-squares-2x2')
+            Stat::make('Active Users', User::count())
+                ->description('System users')
+                ->descriptionIcon('heroicon-m-user-group')
                 ->color('info'),
         ];
     }

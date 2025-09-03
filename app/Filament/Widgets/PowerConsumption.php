@@ -12,6 +12,8 @@ class PowerConsumption extends ChartWidget
 
     //maxheight
     protected static ?string $maxHeight = '200px';
+    
+    protected static ?int $sort = 3;
 
     protected function getData(): array
     {

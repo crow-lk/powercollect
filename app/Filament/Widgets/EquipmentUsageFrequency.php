@@ -16,6 +16,8 @@ class EquipmentUsageFrequency extends ChartWidget
 
     //maxheight
     protected static ?string $maxHeight = '200px';
+    
+    protected static ?int $sort = 2;
 
     protected function getData(): array
     {

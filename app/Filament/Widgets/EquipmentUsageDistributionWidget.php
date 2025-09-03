@@ -17,6 +17,8 @@ class EquipmentUsageDistributionWidget extends ChartWidget
     protected static ?string $maxHeight = '200px';
 
     protected static ?string $pollingInterval = null;
+    
+    protected static ?int $sort = 1;
 
     protected function getData(): array
     {

@@ -9,6 +9,15 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class ThisMonthUsageWidget extends BaseWidget
 {
+    protected int|string|array $columnSpan = 1;
+    
+    protected static ?int $sort = 8;
+
+    protected function getColumns(): int
+    {
+        return 3;
+    }
+
     protected function getStats(): array
     {
         $thisMonthUsages = ConsumerUsage::whereMonth('created_at', Carbon::now()->month)
