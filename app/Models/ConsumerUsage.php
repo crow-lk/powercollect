@@ -6,6 +6,25 @@ use Illuminate\Database\Eloquent\Model;
 
 class ConsumerUsage extends Model
 {
+    // Helper method to get total watt from all equipment in usage_data
+    public function getTotalWattAttribute()
+    {
+        $total = 0;
+        if (is_array($this->usage_data)) {
+            foreach ($this->usage_data as $item) {
+                if (isset($item['equipment_data'])) {
+                    // New nested structure
+                    foreach ($item['equipment_data'] as $equipment) {
+                        $total += floatval($equipment['watt'] ?? 0);
+                    }
+                } else {
+                    // Direct structure
+                    $total += floatval($item['watt'] ?? 0);
+                }
+            }
+        }
+        return $total;
+    }
     protected $table = 'consumer_usages';
 
     protected $fillable = [
