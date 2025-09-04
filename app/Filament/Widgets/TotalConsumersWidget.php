@@ -9,13 +9,13 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class TotalConsumersWidget extends BaseWidget
 {
-    protected int|string|array $columnSpan = 2;
+    protected int|string|array $columnSpan = 1;
     
     protected static ?int $sort = 7;
 
     protected function getColumns(): int
     {
-        return 2;
+        return 1;
     }
 
     protected function getStats(): array
