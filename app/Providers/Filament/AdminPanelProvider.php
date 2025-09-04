@@ -52,26 +52,18 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                // Chart widgets (full width at top) - Sort 1-3
+                // Chart widgets (full width at top)
                 \App\Filament\Widgets\EquipmentUsageDistributionWidget::class,
                 \App\Filament\Widgets\EquipmentUsageFrequency::class,
                 \App\Filament\Widgets\PowerConsumption::class,
                 
-                // Stats widgets in 3-column grid (middle section) - Sort 4-9
-                // Row 1: Total Usage Records | Total Properties | Total Equipment
+                // Stats widgets (will be arranged in 3-column grid via widget properties)
                 \App\Filament\Widgets\TotalUsageRecordsWidget::class,
                 \App\Filament\Widgets\TotalPropertiesWidget::class,
                 \App\Filament\Widgets\TotalEquipmentWidget::class,
-                
-                // Row 2: Total Consumers | This Month Usage | Property Parts
                 \App\Filament\Widgets\TotalConsumersWidget::class,
-                \App\Filament\Widgets\ThisMonthUsageWidget::class,
-                \App\Filament\Widgets\PropertyPartsWidget::class,
                 
-                // Additional widget - Sort 10
-                \App\Filament\Widgets\TotalActiveUsersWidget::class,
-                
-                // Recent Activity widget (full width at bottom) - Sort 11
+                // Recent Activity widget (full width at bottom)
                 \App\Filament\Widgets\RecentActivityWidget::class,
             ])
             ->middleware([

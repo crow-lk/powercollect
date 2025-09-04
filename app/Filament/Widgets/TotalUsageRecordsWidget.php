@@ -15,7 +15,7 @@ class TotalUsageRecordsWidget extends BaseWidget
 
     protected function getColumns(): int
     {
-        return 3;
+        return 2;
     }
 
     protected function getStats(): array

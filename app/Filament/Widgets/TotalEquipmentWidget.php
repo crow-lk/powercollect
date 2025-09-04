@@ -3,18 +3,19 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Equipment;
+use Filament\Support\Enums\IconPosition;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class TotalEquipmentWidget extends BaseWidget
 {
-    protected int|string|array $columnSpan = 1;
+    protected int|string|array $columnSpan = 2;
     
     protected static ?int $sort = 6;
 
     protected function getColumns(): int
     {
-        return 3;
+        return 2;
     }
 
     protected function getStats(): array
@@ -22,8 +23,9 @@ class TotalEquipmentWidget extends BaseWidget
         return [
             Stat::make('Total Equipment', Equipment::count())
                 ->description('Available equipment units')
-                ->descriptionIcon('heroicon-m-cog-6-tooth')
-                ->color('warning'),
+                ->descriptionIcon('heroicon-m-cog-6-tooth', IconPosition::Before)
+                ->chart([5,2,8,3])
+                ->color('info'),
         ];
     }
 }
