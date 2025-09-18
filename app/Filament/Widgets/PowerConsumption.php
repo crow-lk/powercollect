@@ -6,7 +6,7 @@ use Filament\Widgets\ChartWidget;
 
 class PowerConsumption extends ChartWidget
 {
-    protected static ?string $heading = 'Chart';
+    protected static ?string $heading = 'Power Consumption(kWh) by Time Slots (15-minute intervals)';
 
     protected int|string|array $columnSpan = 'full';
 

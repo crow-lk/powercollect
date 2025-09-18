@@ -50,7 +50,6 @@ class AdminPanelProvider extends PanelProvider
             ->pages([
                 \App\Filament\Pages\Dashboard::class,
             ])
-            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 // Chart widgets (full width at top)
                 \App\Filament\Widgets\EquipmentUsageDistributionWidget::class,
@@ -65,6 +64,11 @@ class AdminPanelProvider extends PanelProvider
                 
                 // Recent Activity widget (full width at bottom)
                 \App\Filament\Widgets\RecentActivityWidget::class,
+                
+                // Consumer-specific widgets (hidden from dashboard, used only in ConsumerUsage views)
+                \App\Filament\Widgets\ConsumerEquipmentUsageFrequencyWidget::class,
+                \App\Filament\Widgets\ConsumerWattageDistributionWidget::class,
+                \App\Filament\Widgets\ConsumerPowerConsumptionWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
