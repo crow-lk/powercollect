@@ -4,6 +4,7 @@ namespace App\Filament\Widgets;
 
 use Filament\Widgets\ChartWidget;
 use App\Models\ConsumerUsage;
+use App\Models\Consumer;
 use App\Models\Equipment;
 use Flowframe\Trend\Trend;
 use Flowframe\Trend\TrendValue;
@@ -17,12 +18,40 @@ class EquipmentUsageFrequency extends ChartWidget
     //maxheight
     protected static ?string $maxHeight = '200px';
     
-    protected static ?int $sort = 2;
+    protected static ?int $sort = 3;
+
+    public ?int $selectedConsumerId = null;
+
+    protected $listeners = ['consumer-selected' => 'updateConsumerFilter'];
+
+    public function updateConsumerFilter($consumerId = null)
+    {
+        $this->selectedConsumerId = $consumerId;
+        $this->updateChartData();
+    }
 
     protected function getData(): array
     {
-        // Get all unique equipment names from usage data
-        $equipmentNames = ConsumerUsage::all()
+        // Only show data if a consumer is selected
+        if (!$this->selectedConsumerId) {
+            return [
+                'datasets' => [
+                    [
+                        'label' => 'Please select a consumer to view equipment usage',
+                        'data' => [],
+                        'backgroundColor' => [],
+                        'borderColor' => [],
+                        'borderWidth' => 1,
+                    ],
+                ],
+                'labels' => [],
+            ];
+        }
+
+        // Get usage data for selected consumer only
+        $equipmentNames = ConsumerUsage::whereHas('property', function ($q) {
+            $q->where('consumer_id', $this->selectedConsumerId);
+        })->get()
             ->flatMap(function ($usage) {
                 $equipments = [];
                 if (is_array($usage->usage_data)) {
@@ -51,11 +80,16 @@ class EquipmentUsageFrequency extends ChartWidget
         foreach ($equipmentNames as $equipmentName) {
             // Use Trend to count occurrences of this equipment over time
             try {
-                $trendData = Trend::query(
-                    ConsumerUsage::whereJsonContains('usage_data', ['equipment' => $equipmentName])
-                        ->orWhereJsonContains('usage_data', [['equipment' => $equipmentName]]) // For direct structure
-                        ->orWhereJsonContains('usage_data', [['equipment_data' => [['equipment' => $equipmentName]]]]) // For nested structure
-                )
+                $trendQuery = ConsumerUsage::whereJsonContains('usage_data', ['equipment' => $equipmentName])
+                    ->orWhereJsonContains('usage_data', [['equipment' => $equipmentName]]) // For direct structure
+                    ->orWhereJsonContains('usage_data', [['equipment_data' => [['equipment' => $equipmentName]]]]); // For nested structure
+                
+                // Apply consumer filter (always required now)
+                $trendQuery->whereHas('property', function ($q) {
+                    $q->where('consumer_id', $this->selectedConsumerId);
+                });
+                
+                $trendData = Trend::query($trendQuery)
                 ->between(
                     start: now()->subMonths(12),
                     end: now(),
@@ -68,7 +102,9 @@ class EquipmentUsageFrequency extends ChartWidget
                 
             } catch (\Exception $e) {
                 // Fallback to manual counting if trend fails
-                $totalCount = ConsumerUsage::all()->sum(function ($usage) use ($equipmentName) {
+                $totalCount = ConsumerUsage::whereHas('property', function ($q) {
+                    $q->where('consumer_id', $this->selectedConsumerId);
+                })->get()->sum(function ($usage) use ($equipmentName) {
                     $count = 0;
                     if (is_array($usage->usage_data)) {
                         foreach ($usage->usage_data as $item) {
@@ -121,10 +157,19 @@ class EquipmentUsageFrequency extends ChartWidget
         $labels = array_keys($equipmentFrequency);
         $data = array_values($equipmentFrequency);
         
+        // Get consumer info for chart title
+        $consumerInfo = '';
+        if ($this->selectedConsumerId) {
+            $consumer = Consumer::find($this->selectedConsumerId);
+            if ($consumer) {
+                $consumerInfo = ' - ' . $consumer->name;
+            }
+        }
+        
         return [
             'datasets' => [
                 [
-                    'label' => 'Usage Frequency',
+                    'label' => 'Usage Frequency' . $consumerInfo,
                     'data' => $data,
                     'backgroundColor' => [
                         'rgba(54, 162, 235, 0.8)',

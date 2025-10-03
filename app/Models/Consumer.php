@@ -20,5 +20,23 @@ class Consumer extends Model
     {
         return $this->hasMany(ConsumerUsage::class);
     }
+
+    public function properties()
+    {
+        return $this->hasMany(Property::class);
+    }
+
+    public function scopeSearch($query, $search)
+    {
+        return $query->where(function ($query) use ($search) {
+            $query->where('name', 'like', "%{$search}%")
+                ->orWhere('address', 'like', "%{$search}%")
+                ->orWhere('nic', 'like', "%{$search}%")
+                ->orWhere('id', 'like', "%{$search}%")
+                ->orWhereHas('properties', function ($propertyQuery) use ($search) {
+                    $propertyQuery->where('account_no', 'like', "%{$search}%");
+                });
+        });
+    }
     
 }

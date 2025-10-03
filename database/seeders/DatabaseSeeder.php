@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             GalleConsumerSeeder::class,
             GallePropertySeeder::class,
             GalleEquipmentSeeder::class,
+            PropertyPartSeeder::class,
         ]);
     }
 }

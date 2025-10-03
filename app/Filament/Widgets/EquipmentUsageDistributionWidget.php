@@ -3,6 +3,7 @@
 namespace App\Filament\Widgets;
 
 use App\Models\ConsumerUsage;
+use App\Models\Consumer;
 use App\Models\Equipment;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Contracts\View\View;
@@ -18,7 +19,17 @@ class EquipmentUsageDistributionWidget extends ChartWidget
 
     protected static ?string $pollingInterval = null;
     
-    protected static ?int $sort = 1;
+    protected static ?int $sort = 2;
+
+    public ?int $selectedConsumerId = null;
+
+    protected $listeners = ['consumer-selected' => 'updateConsumerFilter'];
+
+    public function updateConsumerFilter($consumerId = null)
+    {
+        $this->selectedConsumerId = $consumerId;
+        $this->updateChartData();
+    }
 
     protected function getData(): array
     {
@@ -49,23 +60,28 @@ class EquipmentUsageDistributionWidget extends ChartWidget
             $periodData[$period] = 0; // Initialize with 0 watts
         }
 
-        // Get all usage data and aggregate watts by 15-minute periods
-        $usages = ConsumerUsage::all();
-
-        // Add some test data if no data exists
-        if ($usages->isEmpty()) {
-            // Generate some sample data for demonstration
-            for ($i = 1; $i <= 96; $i++) {
-                // Add some random data for testing
-                if ($i >= 32 && $i <= 40) { // Morning peak
-                    $periodData[$i] = rand(800, 1200);
-                } elseif ($i >= 72 && $i <= 80) { // Evening peak
-                    $periodData[$i] = rand(600, 1000);
-                } else {
-                    $periodData[$i] = rand(200, 500);
-                }
-            }
+        // Only show data if a consumer is selected
+        if (!$this->selectedConsumerId) {
+            // Return empty data with message
+            return [
+                'datasets' => [
+                    [
+                        'label' => 'Please select a consumer to view data',
+                        'data' => [],
+                        'backgroundColor' => 'rgba(226, 229, 7, 0.6)',
+                        'borderColor' => 'rgb(172, 11, 67)',
+                        'borderWidth' => 0.5,
+                        'fill' => true,
+                    ],
+                ],
+                'labels' => $periodLabels,
+            ];
         }
+
+        // Get usage data for selected consumer only
+        $usages = ConsumerUsage::whereHas('property', function ($q) {
+            $q->where('consumer_id', $this->selectedConsumerId);
+        })->get();
 
         foreach ($usages as $usage) {
             if (is_array($usage->usage_data)) {
@@ -109,10 +125,19 @@ class EquipmentUsageDistributionWidget extends ChartWidget
         // Convert to ordered arrays
         $wattValues = array_values($periodData);
 
+        // Get consumer info for chart title
+        $consumerInfo = '';
+        if ($this->selectedConsumerId) {
+            $consumer = Consumer::find($this->selectedConsumerId);
+            if ($consumer) {
+                $consumerInfo = ' - ' . $consumer->name;
+            }
+        }
+
         return [
             'datasets' => [
                 [
-                    'label' => 'Total Wattage (Watts)',
+                    'label' => 'Total Wattage (Watts)' . $consumerInfo,
                     'data' => $wattValues,
                     'backgroundColor' => 'rgba(226, 229, 7, 0.6)',
                     'borderColor' => 'rgb(172, 11, 67)',

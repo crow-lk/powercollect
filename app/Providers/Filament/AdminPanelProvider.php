@@ -51,6 +51,9 @@ class AdminPanelProvider extends PanelProvider
                 \App\Filament\Pages\Dashboard::class,
             ])
             ->widgets([
+                // Recent Consumers widget (full width at top)
+                \App\Filament\Widgets\RecentConsumersWidget::class,
+                
                 // Chart widgets (full width at top)
                 \App\Filament\Widgets\EquipmentUsageDistributionWidget::class,
                 \App\Filament\Widgets\EquipmentUsageFrequency::class,
