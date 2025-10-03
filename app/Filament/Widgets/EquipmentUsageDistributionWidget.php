@@ -12,7 +12,7 @@ class EquipmentUsageDistributionWidget extends ChartWidget
 {
     protected static ?string $heading = 'Total wattage ratings by Time Slots (15-minute intervals)';
 
-    protected int|string|array $columnSpan = 'full';
+    protected int|string|array $columnSpan = 2;
 
     //maxheight
     protected static ?string $maxHeight = '200px';
