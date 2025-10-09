@@ -57,6 +57,7 @@ class AdminPanelProvider extends PanelProvider
                 // Chart widgets (full width at top)
                 \App\Filament\Widgets\EquipmentUsageDistributionWidget::class,
                 \App\Filament\Widgets\EquipmentUsageFrequency::class,
+                \App\Filament\Widgets\PropertyPartWattageWidget::class,
                 \App\Filament\Widgets\PowerConsumption::class,
                 
                 // Stats widgets (will be arranged in 3-column grid via widget properties)
