@@ -73,6 +73,7 @@ class AdminPanelProvider extends PanelProvider
                 \App\Filament\Widgets\ConsumerEquipmentUsageFrequencyWidget::class,
                 \App\Filament\Widgets\ConsumerWattageDistributionWidget::class,
                 \App\Filament\Widgets\ConsumerPowerConsumptionWidget::class,
+                \App\Filament\Widgets\ConsumerPropertyPartWattageWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,

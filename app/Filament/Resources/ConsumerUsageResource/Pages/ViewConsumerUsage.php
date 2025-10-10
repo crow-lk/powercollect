@@ -8,6 +8,7 @@ use App\Filament\Widgets\ConsumerEquipmentUsageFrequencyWidget;
 use App\Filament\Widgets\ConsumerPowerConsumptionWidget;
 use Filament\Actions;
 use Filament\Resources\Pages\ViewRecord;
+use App\Filament\Widgets\ConsumerPropertyPartWattageWidget;
 
 class ViewConsumerUsage extends ViewRecord
 {
@@ -29,6 +30,7 @@ class ViewConsumerUsage extends ViewRecord
             ConsumerPowerConsumptionWidget::class,
             ConsumerWattageDistributionWidget::class,
             ConsumerEquipmentUsageFrequencyWidget::class,
+            ConsumerPropertyPartWattageWidget::class,
         ];
     }
 }

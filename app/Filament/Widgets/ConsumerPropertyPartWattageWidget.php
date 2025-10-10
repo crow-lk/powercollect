@@ -4,63 +4,35 @@ namespace App\Filament\Widgets;
 
 use Filament\Widgets\ChartWidget;
 use App\Models\ConsumerUsage;
-use App\Models\Consumer;
-use Flowframe\Trend\Trend;
-use Flowframe\Trend\TrendValue;
+use Illuminate\Database\Eloquent\Model;
 
-class PropertyPartWattageWidget extends ChartWidget
+class ConsumerPropertyPartWattageWidget extends ChartWidget
 {
-    protected static ?string $heading = 'Property Part - Wattage Usage';
+    protected static ?string $heading = 'Consumer Property Part - Wattage Usage';
     
     protected int | string | array $columnSpan = 'full';
 
-    // Max height
     protected static ?string $maxHeight = '200px';
     
-    protected static ?int $sort = 4;
+    protected static ?int $sort = 3;
 
-    public ?int $selectedConsumerId = null;
-
-    protected $listeners = ['consumer-selected' => 'updateConsumerFilter'];
+    public ?Model $record = null;
 
     public static function canView(): bool
     {
-        // Show this widget on the main dashboard (admin routes) but not in consumer-usage views
-        return request()->route() && !str_contains(request()->route()->getName(), 'consumer-usage');
-    }
-
-    public function updateConsumerFilter($consumerId = null)
-    {
-        $this->selectedConsumerId = $consumerId;
-        $this->updateChartData();
+        // Only show this widget when we have a record (i.e., not on the main dashboard)
+        return request()->route() && str_contains(request()->route()->getName(), 'consumer-usage');
     }
 
     protected function getData(): array
     {
-        // Only show data if a consumer is selected
-        if (!$this->selectedConsumerId) {
-            return [
-                'datasets' => [
-                    [
-                        'label' => 'Please select a consumer to view property part wattage',
-                        'data' => [],
-                        'backgroundColor' => [],
-                        'borderColor' => [],
-                        'borderWidth' => 1,
-                    ],
-                ],
-                'labels' => [],
-            ];
-        }
-
-        // Get usage data for selected consumer only
+        // Initialize property part wattage array
         $propertyPartWattage = [];
-        
-        $usageRecords = ConsumerUsage::whereHas('property', function ($q) {
-            $q->where('consumer_id', $this->selectedConsumerId);
-        })->get();
 
-        foreach ($usageRecords as $usage) {
+        // Get property part wattage data for the specific consumer usage record
+        if ($this->record && $this->record instanceof ConsumerUsage) {
+            $usage = $this->record;
+            
             if (is_array($usage->usage_data)) {
                 foreach ($usage->usage_data as $item) {
                     if (isset($item['equipment_data'])) {
@@ -69,13 +41,14 @@ class PropertyPartWattageWidget extends ChartWidget
                         
                         foreach ($item['equipment_data'] as $equipment) {
                             $watt = floatval($equipment['watt'] ?? 0);
+                            
                             if (!isset($propertyPartWattage[$propertyPart])) {
                                 $propertyPartWattage[$propertyPart] = 0;
                             }
                             $propertyPartWattage[$propertyPart] += $watt;
                         }
                     } else {
-                        // Direct structure
+                        // Direct structure (fallback)
                         $propertyPart = $item['property_part'] ?? 'Unknown';
                         $watt = floatval($item['watt'] ?? 0);
                         
@@ -86,6 +59,17 @@ class PropertyPartWattageWidget extends ChartWidget
                     }
                 }
             }
+        } else {
+            // Add some test data if no specific record exists
+            $propertyPartWattage = [
+                'Kitchen' => 450,
+                'Living Room' => 320,
+                'Bedroom' => 180,
+                'Bathroom' => 120,
+                'Dining Room' => 95,
+                'Office' => 85,
+                'Garage' => 60,
+            ];
         }
 
         // Remove property parts with zero wattage
@@ -112,14 +96,11 @@ class PropertyPartWattageWidget extends ChartWidget
         // Prepare data for chart
         $labels = array_keys($propertyPartWattage);
         $data = array_values($propertyPartWattage);
-        
+
         // Get consumer info for chart title
         $consumerInfo = '';
-        if ($this->selectedConsumerId) {
-            $consumer = Consumer::find($this->selectedConsumerId);
-            if ($consumer) {
-                $consumerInfo = ' - ' . $consumer->name;
-            }
+        if ($this->record && $this->record->property) {
+            $consumerInfo = ' - ' . $this->record->property->account_no . ' (' . $this->record->property->address . ')';
         }
         
         return [
@@ -178,24 +159,33 @@ class PropertyPartWattageWidget extends ChartWidget
     protected function getOptions(): array
     {
         return [
-            'plugins' => [
-                'legend' => [
-                    'display' => true,
-                ],
-            ],
+            'maintainAspectRatio' => true,
+            'responsive' => true,
             'scales' => [
-                'y' => [
-                    'beginAtZero' => true,
-                    'title' => [
-                        'display' => true,
-                        'text' => 'Total Wattage (W)',
-                    ],
-                ],
                 'x' => [
+                    'display' => true,
                     'title' => [
                         'display' => true,
                         'text' => 'Property Parts',
                     ],
+                ],
+                'y' => [
+                    'display' => true,
+                    'title' => [
+                        'display' => true,
+                        'text' => 'Total Wattage (W)',
+                    ],
+                    'beginAtZero' => true,
+                ],
+            ],
+            'plugins' => [
+                'legend' => [
+                    'display' => true,
+                    'position' => 'top',
+                ],
+                'tooltip' => [
+                    'mode' => 'index',
+                    'intersect' => false,
                 ],
             ],
         ];

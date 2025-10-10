@@ -173,14 +173,14 @@ class ConsumerUsageResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('property.consumer.name')
+                    ->label('Consumer Name')
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('property.account_no')
                     ->label('Property Account No')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('property.address')
-                    ->label('Property Address')
-                    ->searchable()
-                    ->limit(30),
                 Tables\Columns\TextColumn::make('date')
                     ->label('Date')
                     ->date()
@@ -263,37 +263,49 @@ class ConsumerUsageResource extends Resource
                     ->schema([
                         Infolists\Components\RepeatableEntry::make('usage_data')
                             ->schema([
-                                Infolists\Components\TextEntry::make('property_part')
-                                    ->label('Property Part')
-                                    ->badge()
-                                    ->color('info'),
-                                Infolists\Components\TextEntry::make('equipment')
-                                    ->label('Equipment'),
-                                Infolists\Components\TextEntry::make('watt')
-                                    ->label('W (watt)')
-                                    ->formatStateUsing(fn ($state) => number_format($state, 2).' W')
-                                    ->badge()
-                                    ->color('success'),
-                                Infolists\Components\TextEntry::make('time_period')
-                                    ->label('Time Period')
-                                    ->formatStateUsing(function ($state) {
-                                        if (is_array($state)) {
-                                            return collect($state)->map(function ($period) {
-                                                $startTime = now()->startOfDay()->addMinutes(($period - 1) * 15);
-                                                $endTime = $startTime->copy()->addMinutes(15);
-
-                                                return "Period {$period} ({$startTime->format('H:i')} - {$endTime->format('H:i')})";
-                                            })->join(', ');
-                                        } else {
-                                            $startTime = now()->startOfDay()->addMinutes(($state - 1) * 15);
-                                            $endTime = $startTime->copy()->addMinutes(15);
-
-                                            return "Period {$state} ({$startTime->format('H:i')} - {$endTime->format('H:i')})";
-                                        }
-                                    })
-                                    ->badge(),
+                                // First row: Property Part, Equipment, and Wattage
+                                Infolists\Components\Group::make([
+                                    Infolists\Components\TextEntry::make('property_part')
+                                        ->label('Property Part')
+                                        ->badge()
+                                        ->color('info'),
+                                    Infolists\Components\TextEntry::make('equipment')
+                                        ->label('Equipment'),
+                                    Infolists\Components\TextEntry::make('watt')
+                                        ->label('W (watt)')
+                                        ->formatStateUsing(fn ($state) => number_format($state, 2).' W')
+                                        ->badge()
+                                        ->color('success'),
+                                ])
+                                ->columns(3),
+                                
+                                // Second row: Time Periods with better column distribution
+                                Infolists\Components\Section::make('Time Periods')
+                                    ->schema([
+                                        Infolists\Components\TextEntry::make('time_period')
+                                            ->label('Active Time Periods')
+                                            ->formatStateUsing(function ($state) {
+                                                if (is_array($state)) {
+                                                    return collect($state)->map(function ($period) {
+                                                        $startTime = now()->startOfDay()->addMinutes(($period - 1) * 15);
+                                                        $endTime = $startTime->copy()->addMinutes(15);
+                                                        return "Period {$period} ({$startTime->format('H:i')} - {$endTime->format('H:i')})";
+                                                    })->chunk(6)->map(function ($chunk) {
+                                                        return $chunk->join(' • ');
+                                                    })->join('<br>');
+                                                } else {
+                                                    $startTime = now()->startOfDay()->addMinutes(($state - 1) * 15);
+                                                    $endTime = $startTime->copy()->addMinutes(15);
+                                                    return "Period {$state} ({$startTime->format('H:i')} - {$endTime->format('H:i')})";
+                                                }
+                                            })
+                                            ->html()
+                                            ->badge()
+                                            ->color('warning'),
+                                    ])
+                                    ->compact()
+                                    ->columnSpanFull(),
                             ])
-                            ->columns(4)
                             ->label('Equipment Usage Records'),
                     ]),
 
