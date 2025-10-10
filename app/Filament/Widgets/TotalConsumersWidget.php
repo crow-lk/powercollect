@@ -3,12 +3,15 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Consumer;
+use App\Filament\Widgets\Concerns\HasRoleVisibility;
 use Filament\Support\Enums\IconPosition;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class TotalConsumersWidget extends BaseWidget
 {
+    use HasRoleVisibility;
+
     protected int|string|array $columnSpan = [
         'default' => 'full',
         'md' => 1,
@@ -30,5 +33,10 @@ class TotalConsumersWidget extends BaseWidget
                 ->chart([10,3,15,7])
                 ->color('danger'),
         ];
+    }
+
+    public static function canView(): bool
+    {
+        return static::canViewWidgetByRole();
     }
 }

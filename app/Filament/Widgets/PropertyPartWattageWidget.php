@@ -5,11 +5,14 @@ namespace App\Filament\Widgets;
 use Filament\Widgets\ChartWidget;
 use App\Models\ConsumerUsage;
 use App\Models\Consumer;
+use App\Filament\Widgets\Concerns\HasRoleVisibility;
 use Flowframe\Trend\Trend;
 use Flowframe\Trend\TrendValue;
 
 class PropertyPartWattageWidget extends ChartWidget
 {
+    use HasRoleVisibility;
+
     protected static ?string $heading = 'Property Part - Wattage Usage';
     
     protected int | string | array $columnSpan = 'full';
@@ -25,6 +28,10 @@ class PropertyPartWattageWidget extends ChartWidget
 
     public static function canView(): bool
     {
+        if (! static::canViewWidgetByRole()) {
+            return false;
+        }
+
         // Show this widget on the main dashboard (admin routes) but not in consumer-usage views
         return request()->route() && !str_contains(request()->route()->getName(), 'consumer-usage');
     }

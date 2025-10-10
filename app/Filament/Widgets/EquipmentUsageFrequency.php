@@ -6,11 +6,13 @@ use Filament\Widgets\ChartWidget;
 use App\Models\ConsumerUsage;
 use App\Models\Consumer;
 use App\Models\Equipment;
+use App\Filament\Widgets\Concerns\HasRoleVisibility;
 use Flowframe\Trend\Trend;
 use Flowframe\Trend\TrendValue;
 
 class EquipmentUsageFrequency extends ChartWidget
 {
+    use HasRoleVisibility;
     protected static ?string $heading = 'Equipment Usage Frequency';
     
     protected int | string | array $columnSpan = 'full';
@@ -205,5 +207,10 @@ class EquipmentUsageFrequency extends ChartWidget
     protected function getType(): string
     {
         return 'bar';
+    }
+
+    public static function canView(): bool
+    {
+        return static::canViewWidgetByRole();
     }
 }

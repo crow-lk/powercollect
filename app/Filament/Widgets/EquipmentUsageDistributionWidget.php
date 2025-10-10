@@ -5,11 +5,13 @@ namespace App\Filament\Widgets;
 use App\Models\ConsumerUsage;
 use App\Models\Consumer;
 use App\Models\Equipment;
+use App\Filament\Widgets\Concerns\HasRoleVisibility;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Contracts\View\View;
 
 class EquipmentUsageDistributionWidget extends ChartWidget
 {
+    use HasRoleVisibility;
     protected static ?string $heading = 'Total wattage ratings by Time Slots (15-minute intervals)';
 
     protected int|string|array $columnSpan = [
@@ -154,11 +156,6 @@ class EquipmentUsageDistributionWidget extends ChartWidget
         ];
     }
 
-    protected function getType(): string
-    {
-        return 'bar';
-    }
-
     protected function getOptions(): array
     {
         return [
@@ -197,5 +194,15 @@ class EquipmentUsageDistributionWidget extends ChartWidget
                 ],
             ],
         ];
+    }
+
+    protected function getType(): string
+    {
+        return 'bar';
+    }
+
+    public static function canView(): bool
+    {
+        return static::canViewWidgetByRole();
     }
 }

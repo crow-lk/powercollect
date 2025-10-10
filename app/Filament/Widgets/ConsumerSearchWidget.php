@@ -2,6 +2,7 @@
 
 namespace App\Filament\Widgets;
 
+use App\Filament\Widgets\Concerns\HasRoleVisibility;
 use Filament\Widgets\Widget;
 use App\Models\Consumer;
 use App\Models\PropertyPart;
@@ -9,6 +10,8 @@ use Illuminate\Support\Collection;
 
 class ConsumerSearchWidget extends Widget
 {
+    use HasRoleVisibility;
+
     protected static string $view = 'filament.widgets.consumer-search-widget';
     
     protected int|string|array $columnSpan = 'full';
@@ -98,5 +101,10 @@ class ConsumerSearchWidget extends Widget
     {
         // Small delay to allow click events to process
         $this->showResults = false;
+    }
+
+    public static function canView(): bool
+    {
+        return static::canViewWidgetByRole();
     }
 }

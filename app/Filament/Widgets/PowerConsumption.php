@@ -4,9 +4,12 @@ namespace App\Filament\Widgets;
 
 use Filament\Widgets\ChartWidget;
 use App\Models\Consumer;
+use App\Filament\Widgets\Concerns\HasRoleVisibility;
 
 class PowerConsumption extends ChartWidget
 {
+    use HasRoleVisibility;
+
     protected static ?string $heading = 'Power Consumption(kWh) by Time Slots (15-minute intervals)';
 
     protected int|string|array $columnSpan = 'full';
@@ -130,5 +133,10 @@ class PowerConsumption extends ChartWidget
     protected function getType(): string
     {
         return 'line';
+    }
+
+    public static function canView(): bool
+    {
+        return static::canViewWidgetByRole();
     }
 }

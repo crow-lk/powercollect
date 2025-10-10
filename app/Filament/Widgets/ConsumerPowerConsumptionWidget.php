@@ -3,11 +3,14 @@
 namespace App\Filament\Widgets;
 
 use App\Models\ConsumerUsage;
+use App\Filament\Widgets\Concerns\HasRoleVisibility;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Database\Eloquent\Model;
 
 class ConsumerPowerConsumptionWidget extends ChartWidget
 {
+    use HasRoleVisibility;
+
     protected static ?string $heading = 'Consumer Power Consumption (kWh) by Time Slots (15-minute intervals)';
 
     protected int|string|array $columnSpan = 'full';
@@ -21,6 +24,10 @@ class ConsumerPowerConsumptionWidget extends ChartWidget
 
     public static function canView(): bool
     {
+        if (! static::canViewWidgetByRole()) {
+            return false;
+        }
+
         // Only show this widget when we have a record (i.e., not on the main dashboard)
         return request()->route() && str_contains(request()->route()->getName(), 'consumer-usage');
     }

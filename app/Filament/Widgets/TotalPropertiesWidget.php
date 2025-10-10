@@ -3,12 +3,15 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Property;
+use App\Filament\Widgets\Concerns\HasRoleVisibility;
 use Filament\Support\Enums\IconPosition;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class TotalPropertiesWidget extends BaseWidget
 {
+    use HasRoleVisibility;
+
     protected int|string|array $columnSpan = [
         'default' => 'full',
         'md' => 1,
@@ -30,5 +33,10 @@ class TotalPropertiesWidget extends BaseWidget
                 ->chart([10,18,3,41])
                 ->color('success')
         ];
+    }
+
+    public static function canView(): bool
+    {
+        return static::canViewWidgetByRole();
     }
 }

@@ -3,12 +3,15 @@
 namespace App\Filament\Widgets;
 
 use App\Models\ConsumerUsage;
+use App\Filament\Widgets\Concerns\HasRoleVisibility;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
 
 class RecentActivityWidget extends BaseWidget
 {
+    use HasRoleVisibility;
+
     protected int|string|array $columnSpan = 'full';
 
     protected static ?int $sort = 11;
@@ -51,5 +54,10 @@ class RecentActivityWidget extends BaseWidget
             ->defaultSort('created_at', 'desc')
             ->heading('Recent Usage Activity')
             ->description('Latest 10 consumer usage records');
+    }
+
+    public static function canView(): bool
+    {
+        return static::canViewWidgetByRole();
     }
 }

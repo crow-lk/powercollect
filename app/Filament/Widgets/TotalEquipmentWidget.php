@@ -3,12 +3,15 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Equipment;
+use App\Filament\Widgets\Concerns\HasRoleVisibility;
 use Filament\Support\Enums\IconPosition;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class TotalEquipmentWidget extends BaseWidget
 {
+    use HasRoleVisibility;
+
     protected int|string|array $columnSpan = [
         'default' => 'full',
         'md' => 1,
@@ -30,5 +33,10 @@ class TotalEquipmentWidget extends BaseWidget
                 ->chart([5,2,8,3])
                 ->color('info'),
         ];
+    }
+
+    public static function canView(): bool
+    {
+        return static::canViewWidgetByRole();
     }
 }

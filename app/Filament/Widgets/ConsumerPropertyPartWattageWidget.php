@@ -4,10 +4,13 @@ namespace App\Filament\Widgets;
 
 use Filament\Widgets\ChartWidget;
 use App\Models\ConsumerUsage;
+use App\Filament\Widgets\Concerns\HasRoleVisibility;
 use Illuminate\Database\Eloquent\Model;
 
 class ConsumerPropertyPartWattageWidget extends ChartWidget
 {
+    use HasRoleVisibility;
+
     protected static ?string $heading = 'Consumer Property Part - Wattage Usage';
     
     protected int | string | array $columnSpan = 'full';
@@ -20,6 +23,10 @@ class ConsumerPropertyPartWattageWidget extends ChartWidget
 
     public static function canView(): bool
     {
+        if (! static::canViewWidgetByRole()) {
+            return false;
+        }
+
         // Only show this widget when we have a record (i.e., not on the main dashboard)
         return request()->route() && str_contains(request()->route()->getName(), 'consumer-usage');
     }
