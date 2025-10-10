@@ -9,7 +9,10 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class TotalConsumersWidget extends BaseWidget
 {
-    protected int|string|array $columnSpan = 1;
+    protected int|string|array $columnSpan = [
+        'default' => 'full',
+        'md' => 1,
+    ];
     
     protected static ?int $sort = 7;
 
