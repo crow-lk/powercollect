@@ -52,9 +52,16 @@ class ConsumersResource extends Resource
 
     public static function form(Form $form): Form
     {
-        return $form->schema([Forms\Components\TextInput::make('name')->required(), 
-        Forms\Components\TextInput::make('address')->required(), 
-        Forms\Components\TextInput::make('nic')->required()]);
+        return $form->schema([
+            Forms\Components\TextInput::make('name')->required(),
+            Forms\Components\TextInput::make('address')->required(),
+            Forms\Components\TextInput::make('nic')
+                ->required()
+                ->unique(Consumer::class, ignoreRecord: true)
+                ->validationMessages([
+                    'unique' => 'This NIC is already registered.',
+                ]),
+        ]);
     }
 
     public static function table(Table $table): Table
